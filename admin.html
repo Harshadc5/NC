@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Nikhil Chaudhari</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-container {
+            max-width: 1400px;
+            margin: 80px auto 40px;
+            padding: 20px;
+        }
+        .admin-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .admin-header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        .logout-btn {
+            background: white;
+            color: var(--primary-color);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-md);
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+        .stat-label {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+        .enquiries-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-md);
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .search-box {
+            padding: 10px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            width: 300px;
+            font-size: 1rem;
+        }
+        .enquiry-item {
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        .enquiry-item:hover {
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow-md);
+        }
+        .enquiry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+        .enquiry-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--dark-color);
+        }
+        .enquiry-date {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        .enquiry-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .detail-label {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+        .detail-value {
+            color: var(--text-color);
+            font-weight: 500;
+        }
+        .enquiry-message {
+            background: var(--light-color);
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+        .enquiry-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        .whatsapp-btn {
+            background: #25D366;
+            color: white;
+        }
+        .whatsapp-btn:hover {
+            background: #1ea952;
+        }
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+        }
+        .delete-btn:hover {
+            background: #c0392b;
+        }
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+        .no-enquiries {
+            text-align: center;
+            padding: 50px;
+            color: var(--text-light);
+        }
+        .login-required {
+            max-width: 500px;
+            margin: 100px auto;
+            text-align: center;
+            background: white;
+            padding: 50px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-lg);
+        }
+        .export-btn {
+            background: var(--success-color);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .export-btn:hover {
+            background: #218838;
+        }
+        .bulk-delete-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        .bulk-delete-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .admin-container {
+                margin: 70px auto 20px;
+                padding: 15px;
+            }
+
+            .admin-header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 20px;
+                text-align: center;
+            }
+
+            .admin-header h1 {
+                font-size: 1.4rem;
+            }
+
+            .admin-header p {
+                font-size: 0.9rem;
+            }
+
+            .logout-btn {
+                width: 100%;
+                padding: 12px;
+            }
+
+            /* Tab Navigation */
+            .tab-btn {
+                padding: 10px 15px !important;
+                font-size: 0.85rem !important;
+                flex: 1;
+            }
+
+            .tab-btn i {
+                display: block;
+                margin-bottom: 5px;
+                font-size: 1.2rem;
+            }
+
+            /* Stats Grid */
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .stat-card {
+                padding: 20px;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+
+            /* Section Header */
+            .section-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+
+            .section-header h2 {
+                font-size: 1.3rem;
+            }
+
+            .section-header > div {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .export-btn,
+            .bulk-delete-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            /* Enquiry Item */
+            .enquiry-item {
+                padding: 15px;
+            }
+
+            .enquiry-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .enquiry-name {
+                font-size: 1.1rem;
+            }
+
+            .enquiry-details {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .enquiry-actions {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                width: 100%;
+                padding: 12px;
+            }
+
+            /* Select All Section */
+            .enquiries-section > div[style*="display: flex"] {
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-container {
+                margin: 65px auto 15px;
+                padding: 10px;
+            }
+
+            .admin-header {
+                padding: 15px;
+            }
+
+            .admin-header h1 {
+                font-size: 1.2rem;
+            }
+
+            .admin-header h1 i {
+                display: block;
+                margin-bottom: 8px;
+                font-size: 1.8rem;
+            }
+
+            .tab-btn {
+                padding: 8px 10px !important;
+                font-size: 0.75rem !important;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-number {
+                font-size: 1.8rem;
+            }
+
+            .stat-label {
+                font-size: 0.9rem;
+            }
+
+            .enquiries-section {
+                padding: 15px;
+            }
+
+            .section-header h2 {
+                font-size: 1.1rem;
+            }
+
+            .enquiry-item {
+                padding: 12px;
+            }
+
+            .enquiry-name {
+                font-size: 1rem;
+            }
+
+            .enquiry-date {
+                font-size: 0.8rem;
+            }
+
+            .detail-label {
+                font-size: 0.8rem;
+            }
+
+            .detail-value {
+                font-size: 0.9rem;
+            }
+
+            .enquiry-message {
+                padding: 12px;
+                font-size: 0.9rem;
+            }
+
+            .action-btn {
+                padding: 10px;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .admin-container {
+                margin: 60px auto 10px;
+                padding: 8px;
+            }
+
+            .admin-header {
+                padding: 12px;
+            }
+
+            .admin-header h1 {
+                font-size: 1.1rem;
+            }
+
+            .logout-btn {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            .tab-btn {
+                padding: 8px 8px !important;
+                font-size: 0.7rem !important;
+            }
+
+            .stat-card {
+                padding: 12px;
+            }
+
+            .stat-number {
+                font-size: 1.6rem;
+            }
+
+            .enquiries-section {
+                padding: 12px;
+            }
+
+            .section-header h2 {
+                font-size: 1rem;
+            }
+
+            .export-btn,
+            .bulk-delete-btn {
+                padding: 8px 15px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container" id="adminDashboard" style="display: none;">
+        <div class="admin-header">
+            <div>
+                <h1><i class="fas fa-user-shield"></i> Welcome to Admin Dashboard</h1>
+                <p style="margin: 5px 0 0 0; opacity: 0.9;">Welcome, <span id="adminName"></span></p>
+            </div>
+            <button onclick="handleLogout()" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div style="display: flex; gap: 10px; margin: 30px 0 20px 0; border-bottom: 2px solid var(--border-color);">
+            <button onclick="switchTab('enquiries')" id="enquiriesTab" class="tab-btn" style="padding: 12px 30px; border: none; background: transparent; color: var(--text-light); font-size: 1rem; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s;">
+                <i class="fas fa-envelope"></i> Enquiries
+            </button>
+            <button onclick="switchTab('appointments')" id="appointmentsTab" class="tab-btn" style="padding: 12px 30px; border: none; background: transparent; color: var(--text-light); font-size: 1rem; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s;">
+                <i class="fas fa-calendar-check"></i> Appointments
+            </button>
+        </div>
+
+        <!-- Enquiries Stats -->
+        <div class="stats-grid" id="enquiriesStats" style="display: none;">
+            <div class="stat-card">
+                <i class="fas fa-envelope" style="font-size: 2rem; color: var(--primary-color);"></i>
+                <div class="stat-number" id="totalEnquiries">0</div>
+                <div class="stat-label">Total Enquiries</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-calendar-day" style="font-size: 2rem; color: var(--success-color);"></i>
+                <div class="stat-number" id="todayEnquiries">0</div>
+                <div class="stat-label">Today's Enquiries</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-clock" style="font-size: 2rem; color: var(--secondary-color);"></i>
+                <div class="stat-number" id="recentEnquiries">0</div>
+                <div class="stat-label">Last 7 Days</div>
+            </div>
+        </div>
+
+        <!-- Appointments Stats -->
+        <div class="stats-grid" id="appointmentsStats" style="display: none;">
+            <div class="stat-card">
+                <i class="fas fa-calendar-check" style="font-size: 2rem; color: var(--primary-color);"></i>
+                <div class="stat-number" id="totalAppointments">0</div>
+                <div class="stat-label">Total Appointments</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-calendar-day" style="font-size: 2rem; color: var(--success-color);"></i>
+                <div class="stat-number" id="todayAppointments">0</div>
+                <div class="stat-label">Today's Appointments</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-clock" style="font-size: 2rem; color: var(--secondary-color);"></i>
+                <div class="stat-number" id="recentAppointments">0</div>
+                <div class="stat-label">Last 7 Days</div>
+            </div>
+        </div>
+
+        <!-- Enquiries Section -->
+        <div class="enquiries-section" id="enquiriesSection" style="display: none;">
+            <div class="section-header">
+                <h2><i class="fas fa-list"></i> All Enquiries</h2>
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <input type="text" id="searchBox" class="search-box" placeholder="Search by name, email, or phone...">
+                    <button onclick="exportToCSV('enquiries')" class="export-btn">
+                        <i class="fas fa-download"></i> Export CSV
+                    </button>
+                </div>
+            </div>
+            <div style="display: flex; gap: 15px; align-items: center; margin: 15px 0; padding: 15px; background: var(--card-bg); border-radius: 10px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                    <input type="checkbox" id="selectAllEnquiries" onchange="toggleSelectAll('enquiries')" style="width: 18px; height: 18px; cursor: pointer;">
+                    <span style="font-weight: 600;">Select All</span>
+                </label>
+                <button id="deleteSelectedEnquiries" onclick="deleteSelected('enquiries')" class="bulk-delete-btn" style="display: none;">
+                    <i class="fas fa-trash"></i> Delete Selected (<span id="selectedEnquiriesCount">0</span>)
+                </button>
+            </div>
+            <div id="enquiriesList" class="loading">
+                <i class="fas fa-spinner fa-spin"></i> Loading enquiries...
+            </div>
+        </div>
+
+        <!-- Appointments Section -->
+        <div class="enquiries-section" id="appointmentsSection" style="display: none;">
+            <div class="section-header">
+                <h2><i class="fas fa-calendar-check"></i> All Appointments</h2>
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <input type="text" id="searchBoxAppointments" class="search-box" placeholder="Search appointments...">
+                    <button onclick="exportToCSV('appointments')" class="export-btn">
+                        <i class="fas fa-download"></i> Export CSV
+                    </button>
+                </div>
+            </div>
+            <div style="display: flex; gap: 15px; align-items: center; margin: 15px 0; padding: 15px; background: var(--card-bg); border-radius: 10px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                    <input type="checkbox" id="selectAllAppointments" onchange="toggleSelectAll('appointments')" style="width: 18px; height: 18px; cursor: pointer;">
+                    <span style="font-weight: 600;">Select All</span>
+                </label>
+                <button id="deleteSelectedAppointments" onclick="deleteSelected('appointments')" class="bulk-delete-btn" style="display: none;">
+                    <i class="fas fa-trash"></i> Delete Selected (<span id="selectedAppointmentsCount">0</span>)
+                </button>
+            </div>
+            <div id="appointmentsList" class="loading">
+                <i class="fas fa-spinner fa-spin"></i> Loading appointments...
+            </div>
+        </div>
+    </div>
+
+    <div class="login-required" id="loginPrompt">
+        <i class="fas fa-lock" style="font-size: 4rem; color: var(--primary-color); margin-bottom: 20px;"></i>
+        <h2>Admin Login Required</h2>
+        <p style="color: var(--text-light); margin: 20px 0;">Please sign in with your admin account to access the dashboard.</p>
+        <div id="googleSignInDiv"></div>
+        <br>
+        <a href="index.html" style="color: var(--primary-color); text-decoration: none;">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, query, orderBy, onSnapshot, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        // Your Firebase configuration - REPLACE WITH YOUR CONFIG
+        const firebaseConfig = {
+  apiKey: "AIzaSyDG38A1Lw7tPzWfLPaNvuEumi89Ku_8TtA",
+  authDomain: "n--c-3dceb.firebaseapp.com",
+  projectId: "n--c-3dceb",
+  storageBucket: "n--c-3dceb.firebasestorage.app",
+  messagingSenderId: "63447153564",
+  appId: "1:63447153564:web:8e88db6d6a9afc3ab3e659",
+  measurementId: "G-6ZCT5KJNRB"
+};
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // Admin emails
+        const ADMIN_EMAILS = ['instamine9@gmail.com'];
+
+        let currentEnquiries = [];
+        let isDataLoaded = false;
+
+        // Check authentication state
+        onAuthStateChanged(auth, (user) => {
+            if (user && ADMIN_EMAILS.includes(user.email)) {
+                document.getElementById('loginPrompt').style.display = 'none';
+                document.getElementById('adminDashboard').style.display = 'block';
+                document.getElementById('adminName').textContent = user.displayName || user.email;
+                
+                // Show loading state for enquiries
+                document.getElementById('totalEnquiries').textContent = '...';
+                document.getElementById('todayEnquiries').textContent = '...';
+                document.getElementById('recentEnquiries').textContent = '...';
+                
+                // Show loading state for appointments
+                document.getElementById('totalAppointments').textContent = '...';
+                document.getElementById('todayAppointments').textContent = '...';
+                document.getElementById('recentAppointments').textContent = '...';
+                
+                loadEnquiries();
+                loadAppointments();
+            } else {
+                document.getElementById('loginPrompt').style.display = 'block';
+                document.getElementById('adminDashboard').style.display = 'none';
+                if (user && !ADMIN_EMAILS.includes(user.email)) {
+                    alert('Access denied. You are not an admin.');
+                    signOut(auth);
+                }
+            }
+        });
+
+        // Google Sign-In
+        document.getElementById('googleSignInDiv').innerHTML = `
+            <button onclick="googleSignIn()" style="background: #4285F4; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; font-weight: 600;">
+                <i class="fab fa-google"></i> Sign in with Google
+            </button>
+        `;
+
+        window.googleSignIn = async () => {
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                console.error('Sign in error:', error);
+                alert('Failed to sign in. Please try again.');
+            }
+        };
+
+        window.handleLogout = async () => {
+            try {
+                await signOut(auth);
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        };
+
+        // Load enquiries from Firebase
+        function loadEnquiries() {
+            const q = query(collection(db, 'enquiries'), orderBy('timestamp', 'desc'));
+            
+            onSnapshot(q, (snapshot) => {
+                currentEnquiries = [];
+                snapshot.forEach((doc) => {
+                    currentEnquiries.push({ id: doc.id, ...doc.data() });
+                });
+                
+                isDataLoaded = true;
+                // Force stats update after data is loaded
+                setTimeout(() => {
+                    updateStats();
+                    displayEnquiries(currentEnquiries);
+                }, 100);
+            });
+        }
+
+        // Update statistics
+        function updateStats() {
+            const total = currentEnquiries.length;
+            
+            // Get today's date at midnight
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            // Count today's enquiries
+            const todayCount = currentEnquiries.filter(e => {
+                if (!e.timestamp) return false;
+                // Convert Firebase Timestamp to Date
+                const enquiryDate = e.timestamp.toDate ? e.timestamp.toDate() : new Date(e.timestamp);
+                enquiryDate.setHours(0, 0, 0, 0);
+                return enquiryDate.getTime() === today.getTime();
+            }).length;
+            
+            // Count last 7 days enquiries
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+            sevenDaysAgo.setHours(0, 0, 0, 0);
+            
+            const recentCount = currentEnquiries.filter(e => {
+                if (!e.timestamp) return false;
+                const enquiryDate = e.timestamp.toDate ? e.timestamp.toDate() : new Date(e.timestamp);
+                return enquiryDate >= sevenDaysAgo;
+            }).length;
+
+            document.getElementById('totalEnquiries').textContent = total;
+            document.getElementById('todayEnquiries').textContent = todayCount;
+            document.getElementById('recentEnquiries').textContent = recentCount;
+        }
+
+        // Display enquiries
+        function displayEnquiries(enquiries) {
+            const listDiv = document.getElementById('enquiriesList');
+            
+            if (enquiries.length === 0) {
+                listDiv.innerHTML = '<div class="no-enquiries"><i class="fas fa-inbox"></i><br>No enquiries found</div>';
+                return;
+            }
+
+            listDiv.innerHTML = enquiries.map(enquiry => {
+                // Convert Firebase Timestamp to readable date
+                const enquiryDate = enquiry.timestamp?.toDate ? enquiry.timestamp.toDate() : new Date(enquiry.timestamp);
+                const formattedDate = enquiryDate.toLocaleString();
+                
+                return `
+                <div class="enquiry-item">
+                    <div class="enquiry-header" style="display: flex; align-items: center; gap: 12px;">
+                        <input type="checkbox" class="enquiry-checkbox" data-id="${enquiry.id}" onchange="updateDeleteButton('enquiries')" style="width: 18px; height: 18px; cursor: pointer;">
+                        <div style="flex: 1;">
+                            <div class="enquiry-name">${enquiry.name}</div>
+                        </div>
+                        <div class="enquiry-date">${formattedDate}</div>
+                    </div>
+                    <div class="enquiry-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Email</div>
+                            <div class="detail-value"><a href="mailto:${enquiry.email}">${enquiry.email}</a></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Phone</div>
+                            <div class="detail-value"><a href="tel:${enquiry.phone}">${enquiry.phone}</a></div>
+                        </div>
+                    </div>
+                    ${enquiry.message ? `<div class="enquiry-message"><strong>Message:</strong><br>${enquiry.message}</div>` : ''}
+                    <div class="enquiry-actions">
+                        <button onclick="replyWhatsApp('${enquiry.name}', '${enquiry.phone}')" class="action-btn whatsapp-btn">
+                            <i class="fab fa-whatsapp"></i> Reply on WhatsApp
+                        </button>
+                        <button onclick="deleteEnquiry('${enquiry.id}')" class="action-btn delete-btn">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `;
+            }).join('');
+            
+            // Reset select all checkbox
+            document.getElementById('selectAllEnquiries').checked = false;
+            updateDeleteButton('enquiries');
+        }
+
+        // Search functionality
+        document.getElementById('searchBox').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = currentEnquiries.filter(enquiry => 
+                enquiry.name.toLowerCase().includes(searchTerm) ||
+                enquiry.email.toLowerCase().includes(searchTerm) ||
+                enquiry.phone.includes(searchTerm)
+            );
+            displayEnquiries(filtered);
+        });
+
+        // Reply on WhatsApp
+        window.replyWhatsApp = (name, phone) => {
+            const message = `Hi ${name}, thank you for your enquiry!`;
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
+        };
+
+        // Delete enquiry
+        window.deleteEnquiry = async (id) => {
+            if (confirm('Are you sure you want to delete this enquiry?')) {
+                try {
+                    await deleteDoc(doc(db, 'enquiries', id));
+                    alert('Enquiry deleted successfully');
+                } catch (error) {
+                    console.error('Delete error:', error);
+                    alert('Failed to delete enquiry');
+                }
+            }
+        };
+
+        // Export to CSV
+        window.exportToCSV = (type) => {
+            const data = type === 'appointments' ? currentAppointments : currentEnquiries;
+            
+            if (data.length === 0) {
+                alert(`No ${type} to export`);
+                return;
+            }
+
+            let csv = 'Name,Email,Phone,Message,Date\n';
+            data.forEach(item => {
+                const date = item.timestamp?.toDate ? item.timestamp.toDate().toLocaleString() : new Date(item.timestamp).toLocaleString();
+                csv += `"${item.name}","${item.email}","${item.phone}","${item.message || ''}","${date}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${type}_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        };
+
+        // Tab switching
+        let currentAppointments = [];
+        
+        window.switchTab = (tab) => {
+            const enquiriesTab = document.getElementById('enquiriesTab');
+            const appointmentsTab = document.getElementById('appointmentsTab');
+            const enquiriesSection = document.getElementById('enquiriesSection');
+            const appointmentsSection = document.getElementById('appointmentsSection');
+            const enquiriesStats = document.getElementById('enquiriesStats');
+            const appointmentsStats = document.getElementById('appointmentsStats');
+            
+            if (tab === 'enquiries') {
+                enquiriesTab.style.color = 'var(--primary-color)';
+                enquiriesTab.style.borderBottom = '3px solid var(--primary-color)';
+                appointmentsTab.style.color = 'var(--text-light)';
+                appointmentsTab.style.borderBottom = '3px solid transparent';
+                enquiriesSection.style.display = 'block';
+                appointmentsSection.style.display = 'none';
+                enquiriesStats.style.display = 'grid';
+                appointmentsStats.style.display = 'none';
+            } else {
+                appointmentsTab.style.color = 'var(--primary-color)';
+                appointmentsTab.style.borderBottom = '3px solid var(--primary-color)';
+                enquiriesTab.style.color = 'var(--text-light)';
+                enquiriesTab.style.borderBottom = '3px solid transparent';
+                appointmentsSection.style.display = 'block';
+                enquiriesSection.style.display = 'none';
+                appointmentsStats.style.display = 'grid';
+                enquiriesStats.style.display = 'none';
+            }
+        };
+
+        // Load appointments from Firebase
+        function loadAppointments() {
+            const q = query(collection(db, 'appointments'), orderBy('timestamp', 'desc'));
+            
+            onSnapshot(q, (snapshot) => {
+                currentAppointments = [];
+                snapshot.forEach((doc) => {
+                    currentAppointments.push({ id: doc.id, ...doc.data() });
+                });
+                
+                setTimeout(() => {
+                    updateAppointmentStats();
+                    displayAppointments(currentAppointments);
+                }, 100);
+            });
+        }
+
+        // Update appointment statistics
+        function updateAppointmentStats() {
+            const total = currentAppointments.length;
+            
+            // Get today's date at midnight
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            // Count today's appointments
+            const todayCount = currentAppointments.filter(a => {
+                if (!a.timestamp) return false;
+                const appointmentDate = a.timestamp.toDate ? a.timestamp.toDate() : new Date(a.timestamp);
+                appointmentDate.setHours(0, 0, 0, 0);
+                return appointmentDate.getTime() === today.getTime();
+            }).length;
+            
+            // Count last 7 days appointments
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+            sevenDaysAgo.setHours(0, 0, 0, 0);
+            
+            const recentCount = currentAppointments.filter(a => {
+                if (!a.timestamp) return false;
+                const appointmentDate = a.timestamp.toDate ? a.timestamp.toDate() : new Date(a.timestamp);
+                return appointmentDate >= sevenDaysAgo;
+            }).length;
+
+            document.getElementById('totalAppointments').textContent = total;
+            document.getElementById('todayAppointments').textContent = todayCount;
+            document.getElementById('recentAppointments').textContent = recentCount;
+        }
+
+        // Display appointments
+        function displayAppointments(appointments) {
+            const listDiv = document.getElementById('appointmentsList');
+            
+            if (appointments.length === 0) {
+                listDiv.innerHTML = '<div class="no-enquiries"><i class="fas fa-inbox"></i><br>No appointments found</div>';
+                return;
+            }
+
+            listDiv.innerHTML = appointments.map(appointment => {
+                const appointmentDate = appointment.timestamp?.toDate ? appointment.timestamp.toDate() : new Date(appointment.timestamp);
+                const formattedDate = appointmentDate.toLocaleString();
+                
+                // Format time slots
+                let timeSlotsHTML = '';
+                if (appointment.timeSlots && appointment.timeSlots.length > 0) {
+                    timeSlotsHTML = `
+                        <div class="enquiry-message" style="background: #f0f4ff; border-left: 4px solid var(--primary-color);">
+                            <strong><i class="fas fa-clock"></i> Preferred Time Slots:</strong><br>
+                            ${appointment.timeSlots.map((slot, index) => `
+                                <div style="margin-top: 8px; padding: 8px; background: white; border-radius: 5px;">
+                                    <strong>Option ${slot.preference || (index + 1)}:</strong> ${slot.dateTime || (slot.date + ' at ' + slot.time)}
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+                
+                return `
+                <div class="enquiry-item">
+                    <div class="enquiry-header" style="display: flex; align-items: center; gap: 12px;">
+                        <input type="checkbox" class="appointment-checkbox" data-id="${appointment.id}" onchange="updateDeleteButton('appointments')" style="width: 18px; height: 18px; cursor: pointer;">
+                        <div style="flex: 1;">
+                            <div class="enquiry-name">${appointment.name}</div>
+                        </div>
+                        <div class="enquiry-date">${formattedDate}</div>
+                    </div>
+                    <div class="enquiry-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Email</div>
+                            <div class="detail-value"><a href="mailto:${appointment.email}">${appointment.email}</a></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Phone</div>
+                            <div class="detail-value"><a href="tel:${appointment.phone}">${appointment.phone}</a></div>
+                        </div>
+                        ${appointment.age ? `
+                        <div class="detail-item">
+                            <div class="detail-label">Age</div>
+                            <div class="detail-value">${appointment.age} years</div>
+                        </div>
+                        ` : ''}
+                        ${appointment.gender ? `
+                        <div class="detail-item">
+                            <div class="detail-label">Gender</div>
+                            <div class="detail-value">${appointment.gender}</div>
+                        </div>
+                        ` : ''}
+                    </div>
+                    ${timeSlotsHTML}
+                    ${appointment.message && appointment.message !== 'No additional message' ? `<div class="enquiry-message"><strong>Message:</strong><br>${appointment.message}</div>` : ''}
+                    <div class="enquiry-actions">
+                        <button onclick="replyWhatsApp('${appointment.name}', '${appointment.phone}')" class="action-btn whatsapp-btn">
+                            <i class="fab fa-whatsapp"></i> Reply on WhatsApp
+                        </button>
+                        <button onclick="deleteAppointment('${appointment.id}')" class="action-btn delete-btn">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `;
+            }).join('');
+            
+            // Reset select all checkbox
+            document.getElementById('selectAllAppointments').checked = false;
+            updateDeleteButton('appointments');
+        }
+
+        // Search appointments
+        document.getElementById('searchBoxAppointments').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = currentAppointments.filter(appointment => 
+                appointment.name.toLowerCase().includes(searchTerm) ||
+                appointment.email.toLowerCase().includes(searchTerm) ||
+                appointment.phone.includes(searchTerm)
+            );
+            displayAppointments(filtered);
+        });
+
+        // Delete appointment
+        window.deleteAppointment = async (id) => {
+            if (confirm('Are you sure you want to delete this appointment?')) {
+                try {
+                    await deleteDoc(doc(db, 'appointments', id));
+                    alert('Appointment deleted successfully');
+                } catch (error) {
+                    console.error('Delete error:', error);
+                    alert('Failed to delete appointment');
+                }
+            }
+        };
+
+        // Toggle select all checkboxes
+        window.toggleSelectAll = (type) => {
+            const checkboxClass = type === 'enquiries' ? 'enquiry-checkbox' : 'appointment-checkbox';
+            const selectAllCheckbox = document.getElementById(`selectAll${type.charAt(0).toUpperCase() + type.slice(1)}`);
+            const checkboxes = document.querySelectorAll(`.${checkboxClass}`);
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+            
+            updateDeleteButton(type);
+        };
+
+        // Update delete button state
+        window.updateDeleteButton = (type) => {
+            const checkboxClass = type === 'enquiries' ? 'enquiry-checkbox' : 'appointment-checkbox';
+            const checkboxes = document.querySelectorAll(`.${checkboxClass}`);
+            const checkedBoxes = Array.from(checkboxes).filter(cb => cb.checked);
+            const count = checkedBoxes.length;
+            
+            const deleteButton = document.getElementById(`deleteSelected${type.charAt(0).toUpperCase() + type.slice(1)}`);
+            const countSpan = document.getElementById(`selected${type.charAt(0).toUpperCase() + type.slice(1)}Count`);
+            
+            if (count > 0) {
+                deleteButton.style.display = 'inline-flex';
+                countSpan.textContent = count;
+            } else {
+                deleteButton.style.display = 'none';
+            }
+            
+            // Update select all checkbox state
+            const selectAllCheckbox = document.getElementById(`selectAll${type.charAt(0).toUpperCase() + type.slice(1)}`);
+            selectAllCheckbox.checked = count > 0 && count === checkboxes.length;
+        };
+
+        // Delete selected items
+        window.deleteSelected = async (type) => {
+            const checkboxClass = type === 'enquiries' ? 'enquiry-checkbox' : 'appointment-checkbox';
+            const checkboxes = document.querySelectorAll(`.${checkboxClass}:checked`);
+            const selectedIds = Array.from(checkboxes).map(cb => cb.getAttribute('data-id'));
+            
+            if (selectedIds.length === 0) {
+                alert(`No ${type} selected`);
+                return;
+            }
+            
+            const confirmMessage = `Are you sure you want to delete ${selectedIds.length} ${type}? This action cannot be undone.`;
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+            
+            try {
+                // Delete all selected items
+                const deletePromises = selectedIds.map(id => 
+                    deleteDoc(doc(db, type, id))
+                );
+                
+                await Promise.all(deletePromises);
+                
+                alert(`Successfully deleted ${selectedIds.length} ${type}`);
+                
+                // Reset select all checkbox
+                document.getElementById(`selectAll${type.charAt(0).toUpperCase() + type.slice(1)}`).checked = false;
+                
+            } catch (error) {
+                console.error('Bulk delete error:', error);
+                alert(`Failed to delete some ${type}. Please try again.`);
+            }
+        };
+    </script>
+</body>
+</html>

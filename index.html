@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nikhil Chaudhari - Your Trusted Dentist</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+   <nav class="navbar">
+  <div class="nav-container">
+    <div class="nav-wrapper">
+
+            <a href="index.html" class="logo" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 10px;">
+                <img src="logo.png" alt="Nikhil Chaudhari logo" class="logo-img">
+                <span>Nikhil Chaudhari</span>
+            </a>
+
+      <ul class="nav-menu">
+        <li><a href="#about">About</a></li>
+        <li><a href="#technology">Technology</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#testimonials">Reviews</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+
+      <!-- RIGHT SIDE (buttons + google together) -->
+      <div class="nav-right">
+        <div class="nav-buttons">
+          <a href="https://wa.me/7588515491?text=Hello,%20I%20would%20like%20to%20schedule%20an%20appointment"
+             class="btn-call" target="_blank">
+            <i class="fab fa-whatsapp"></i> WhatsApp Us
+          </a>
+
+          <a href="javascript:void(0)" onclick="checkAuthAndRedirect()" class="btn-primary">Schedule Now</a>
+        </div>
+
+        <div class="google-login">
+          <button type="button" id="authModalBtn" class="auth-btn" onclick="openAuthModal()">
+            <i class="fas fa-user"></i>
+            Sign In / Sign Up
+          </button>
+        </div>
+      </div>
+
+      <div class="hamburger">
+        <p></p>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Your Trusted Family Dentist</h1>
+                <h2 class="hero-subtitle">Welcome to Nikhil Chaudhari</h2>
+                <p class="hero-description">Experience exceptional dental care with our compassionate team of professionals</p>
+                <div class="hero-buttons">
+<a href="javascript:void(0)" onclick="checkAuthAndRedirect()" ><h3 class="btn-primary btn-large" style="color: rgb(255, 255, 255);">Schedule your Appointment Now</h3> </a>
+
+
+
+                    <!-- <a href="https://wa.me/7588515491?text=Hello,%20I%20would%20like%20to%20schedule%20an%20appointment" class="btn-secondary btn-large" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a> --> 
+                </div>
+            </div>
+            <div class="hero-images">
+                <div class="hero-image-card">
+                    <img src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=400&h=400&fit=crop" alt="Modern dental clinic" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                </div>
+                <div class="hero-image-card">
+                    <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400&h=400&fit=crop" alt="Dental technology and equipment" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                </div>
+                <div class="hero-image-card">
+                    <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=400&h=400&fit=crop" alt="Dental care equipment" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <!-- <div class="section-header">
+                <h2 class="section-title">Top-Rated Family Dentists</h2>
+                <p class="section-subtitle">Meet our experienced dentists supported by a compassionate clinical team. We always look for the best solution for you.</p>
+                <a href="#team" class="btn-link">Meet Us <i class="fas fa-arrow-right"></i></a>
+            </div> -->
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <div class="features-content">
+                <div class="features-image" style="overflow: hidden;">
+                    <img src="office.jpg" alt="Dental clinic reception" style="width: 100%; height: 100%; object-fit: cover; object-position: center; border-radius: 12px; display: block;">
+                </div>
+                <div class="features-text">
+                    <h2>It's All in the Details</h2>
+                    <p class="lead">Our dental office is setting the new standard for first-class care. Your best smile isn't just a treatment, but a delightful experience.</p>
+                    <ul class="features-list">
+                        <li><i class="fas fa-check-circle"></i> Friendly faces who never judge and welcome all ages</li>
+                        <li><i class="fas fa-check-circle"></i> Expertise in transformative cosmetic and restorative procedures</li>
+                        <li><i class="fas fa-check-circle"></i> The latest technology for comfort and results</li>
+                        <li><i class="fas fa-check-circle"></i> Luxury amenities in a state-of-the-art environment</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Insurance Section -->
+    <section class="insurance-section">
+        <div class="container">
+            <div class="insurance-card">
+                <h2>No Insurance? No Problem.</h2>
+                <p>Affordable dental care with our in-house savings plan — no deductibles, no waiting, just quality care.</p>
+                <a href="#savings" class="btn-secondary">Explore Savings Plan</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Specialty Section -->
+    <section class="specialty-section">
+        <div class="container">
+            <div class="specialty-content">
+                <div class="specialty-text">
+                    <h2>Excellence in Full-Arch Implant Dentistry</h2>
+                    <p>Our leading implant dentists provide patients with life-changing solutions for missing teeth. Using advanced technology like robot-guided placement, we ensure a precise, comfortable procedure to replace the function and aesthetics of your natural teeth.</p>
+                    <p>Whether you need a full arch restoration or a single implant, our expertise delivers a seamless experience and a smile built to last.</p>
+                </div>
+                <div class="specialty-image">
+                    <img src="https://images.unsplash.com/photo-1598256989800-fe5f95da9787?w=600&q=80" alt="Full-Arch Implant Dentistry" style="width: 100%; height: 100%; object-fit: cover; border-radius: 15px;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Second Opinion CTA -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Considering Dental Implants? Get a Trusted Second Opinion</h2>
+                <p>Making the right choice for your dental health is essential. We're here to provide honest, expert guidance. Schedule a free consultation to explore your best options.</p>
+                <a href="javascript:void(0)" onclick="checkAuthAndRedirect()" class="btn-primary btn-large">Schedule Now</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Section -->
+    <section id="technology" class="technology-section">
+        <div class="container">
+            <h2 class="section-title center">Technology at Nikhil Chaudhari</h2>
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <div class="tech-image">
+                        <div class="image-placeholder">
+                            <i class="fas fa-tooth"></i>
+                        </div>
+                    </div>
+                    <div class="tech-content">
+                        <h3>Single-Visit Dentistry</h3>
+                        <p>CBCT 3D imaging and CEREC technology deliver faster, more precise care. No goopy impressions, and no temporaries.</p>
+                    </div>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-image">
+                        <div class="image-placeholder">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                    </div>
+                    <div class="tech-content">
+                        <h3>Robot-Guided Implant Placement</h3>
+                        <p>Our doctors use advanced technology to scan, plan, and operate in a single visit. Faster and less invasive with superior outcomes.</p>
+                    </div>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-image">
+                        <div class="image-placeholder">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                    </div>
+                    <div class="tech-content">
+                        <h3>No-Shot Laser Fillings</h3>
+                        <p>We use advanced laser technology, allowing us to perform anesthesia-free fillings. No needles and no pain!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services-section">
+        <div class="container">
+            <h2 class="section-title center">Your Beautiful Smile</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=400&q=80" alt="Routine Dental Care" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                    </div>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <h3>Routine Dental Care</h3>
+                    <p>Clean and healthy has never been this easy — or this enjoyable. We're your entire family's partner in dental health.</p>
+                    <br>
+                    <br>
+                    <a href="https://www.youtube.com/watch?v=dW6Lc_gxyjE&utm_source=chatgpt.com" class="btn-link">Explore General Dentistry <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=400&q=80" alt="Restorative Procedures" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                    </div><p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <h3>Restorative Procedures</h3>
+                    <p>With advanced training and a focus on full-mouth reconstruction, our doctors provide premier care for damaged or missing teeth.</p>
+                    <a href="https://www.youtube.com/watch?v=4ZL9nRqTXJQ&utm_source=chatgpt.com" class="btn-link">Explore Surgical Dentistry <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&q=80" alt="Cosmetic Transformations" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                    </div>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+
+                    <h3>Cosmetic Transformations</h3>
+                    <p>See what's possible through veneers, whitening, or clear aligners. We're certified providers and have designed thousands of confident smiles.</p>
+                    <a href="https://www.youtube.com/watch?v=xQdGFXFlcbg&utm_source=chatgpt.com" class="btn-link">Explore Cosmetic Dentistry <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Expertise Section -->
+    <section class="expertise-section">
+        <div class="container">
+            <h2 class="section-title center">Our Expertise</h2>
+            <div class="expertise-grid">
+                <div class="expertise-item">
+                    <i class="fas fa-tooth"></i>
+                    <span>Veneers</span>
+                </div>
+                <div class="expertise-item">
+                    <i class="fas fa-teeth"></i>
+                    <span>Invisalign</span>
+                </div>
+                <div class="expertise-item">
+                    <i class="fas fa-crown"></i>
+                    <span>Same-Day Crowns</span>
+                </div>
+                <div class="expertise-item">
+                    <i class="fas fa-bolt"></i>
+                    <span>Laser Fillings</span>
+                </div>
+                <div class="expertise-item">
+                    <i class="fas fa-tooth"></i>
+                    <span>Implants</span>
+                </div>
+                <div class="expertise-item">
+                    <i class="fas fa-head-side-mask"></i>
+                    <span>TMJ Treatment</span>
+                </div>
+                <div class="expertise-item">
+                    <i class="fas fa-teeth-open"></i>
+                    <span>Full Mouth Rehab</span>
+                </div>
+                <div class="expertise-item">
+                    <i class="fas fa-star"></i>
+                    <span>Whitening</span>
+                </div>
+                <div class="expertise-item">
+                    <i class="fas fa-tooth"></i>
+                    <span>Root Canals</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comfort Section -->
+    <section class="comfort-section">
+        <div class="container">
+            <div class="comfort-content">
+                <div class="comfort-text">
+                    <h2>Designed for Comfort</h2>
+                    <p>Self-care is so important, and a trip to the dentist is the perfect time to give yourself some extra pampering. Relax with therapeutic neck wraps, massage chairs, skin rejuvenating treatments, and pain-free care.</p>
+                    <a href="#tour" class="btn-secondary">Patient Experience</a>
+                </div>
+                <div class="comfort-gallery">
+                    <div class="gallery-item">
+                        <div class="image-placeholder">
+                            <i class="fas fa-building"></i>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <div class="image-placeholder">
+                            <i class="fas fa-couch"></i>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <div class="image-placeholder">
+                            <i class="fas fa-door-open"></i>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <div class="image-placeholder">
+                            <i class="fas fa-chair"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials-section">
+        <div class="container">
+            <h2 class="section-title center">Kind Words from Our Patients</h2>
+            <p class="testimonial-subtitle">500+ 5-Star Reviews</p>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p>"The staff is amazing and the office is beautiful. They made me feel so comfortable during my visit. Highly recommend!"</p>
+                    <div class="testimonial-author">- Sarah M.</div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p>"Best dental experience I've ever had. The technology they use is incredible and the results speak for themselves."</p>
+                    <div class="testimonial-author">- John D.</div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p>"My family and I have been coming here for years. They treat us like family and always provide excellent care."</p>
+                    <div class="testimonial-author">- Emily R.</div>
+                </div>
+            </div>
+            <div class="cta-box">
+                <h3>Schedule Your First Visit</h3>
+                <a href="javascript:void(0)" onclick="checkAuthAndRedirect()" class="btn-primary btn-large">Schedule Now</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <h2 class="section-title center">Frequently Asked Questions</h2>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What makes Nikhil Chaudhari different?</h3>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Our dentists combine modern technology with personalized care. From same-day crowns and laser fillings to advanced dental implants, we make every visit efficient, comfortable, and tailored to your needs.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Do you offer dental implants?</h3>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! Our dentists are leading implant specialists, providing both single-tooth and full-arch dental implants using robot-guided technology for precision and comfort.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Can I straighten my teeth without braces?</h3>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Absolutely. We help patients achieve beautifully aligned smiles with clear, comfortable aligners. Schedule a consultation to see if Invisalign treatment is right for you.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What if I don't have dental insurance?</h3>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>No problem! Our dental savings plan makes it easy to receive high-quality care without the stress of deductibles or waiting periods. Enjoy discounts on routine cleanings, fillings, and even cosmetic procedures.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Can I get a crown or filling in one visit?</h3>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes. With advanced CEREC and laser technology, we offer same-day crowns and no-shot fillings. That means fewer appointments and a more comfortable experience.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Do you treat TMJ pain and jaw discomfort?</h3>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes. Our TMJ treatment options include oral appliances, bite adjustments, and therapeutic treatments to reduce muscle tension and restore comfort.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2 class="section-title center">Our Office</h2>
+            <div class="contact-grid">
+                
+
+                <div class="contact-info">
+
+
+                    <pa></pa>
+                <pa></pa>
+
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        
+                        <div>
+                            <h4>Address</h4>
+                            <p>Nashik<br>422001</p>
+                            
+                            <!-- Small Map Preview -->
+                            <div class="map-preview">
+                                <iframe 
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d119950.51174780607!2d73.71009845!3d19.9974533!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bddeb6b33f05847%3A0xa47ffa3df6e3a34!2sNashik%2C%20Maharashtra!5e1!3m2!1sen!2sin!4v1642345678901!5m2!1sen!2sin" 
+                                    width="200%" 
+                                    height="250" 
+                                    style="border: 1px; border-radius: 8px;" 
+                                    allowfullscreen="" 
+                                    loading="lazy" 
+                                    referrerpolicy="no-referrer-when-downgrade">
+                                </iframe>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fab fa-whatsapp"></i>
+                        <div>
+                            <h4>Contact</h4>
+                            <p><a href="https://wa.me/7588515491?text=Hello,%20I%20would%20like%20to%20contact%20you" target="_blank">Connect us on WhatsApp</a></p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h4>Hours</h4>
+                            <p>Monday - Thursday: 9AM - 7PM<br>Friday - Sunday: Closed</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <h3>Contact Our Team</h3>
+                    <form id="appointmentForm">
+                        <div class="form-group">
+                            <input type="text" id="enquiryName" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="enquiryEmail" placeholder="Email Address" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" id="enquiryPhone" placeholder="Phone Number" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="enquiryMessage" placeholder="Message" rows="4"></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary btn-large">Send Message</button>
+                    </form>
+                </div>
+            </div>
+            <!-- <div class="trust-badges">
+                <div class="badge-item">
+                    <i class="fas fa-award"></i>
+                    <span>ADA Member</span>
+                </div>
+                <div class="badge-item">
+                    <i class="fas fa-certificate"></i>
+                    <span>Board Certified</span>
+                </div>
+                <div class="badge-item">
+                    <i class="fas fa-star"></i>
+                    <span>5-Star Rated</span>
+                </div>
+                <div class="badge-item">
+                    <i class="fas fa-users"></i>
+                    <span>Family Friendly</span>
+                </div>
+            </div> -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="https://www.youtube.com/watch?v=dW6Lc_gxyjE&utm_source=chatgpt.com">General Dentistry</a></li>
+                        <li><a href="https://www.youtube.com/watch?v=xQdGFXFlcbg&utm_source=chatgpt.com">Cosmetic Dentistry</a></li>
+                        <li><a href="https://www.youtube.com/watch?v=4ZL9nRqTXJQ&utm_source=chatgpt.com">Surgical Dentistry</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Practice Info</h4>
+                    <ul>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#team">Contact Our Team</a></li>
+                        <li><a href="#testimonials">Reviews</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect With Us</h4>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="https://www.instagram.com/drnikhilchaudhari?igsh=dzhxZXEwdjkyYm9y" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                    <!-- <div class="review-links">
+                        <a href="#" class="btn-link">Review Us on Google <i class="fas fa-external-link-alt"></i></a>
+                    </div> -->
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Nikhil Chaudhari. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#privacy">Privacy Policy</a>
+                    <a href="#accessibility">Accessibility Statement</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/7588515491?text=Hello,%20I%20would%20like%20to%20schedule%20an%20appointment" class="floating-call-btn" aria-label="WhatsApp Us" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Authentication Modal -->
+    <div id="authModal" class="auth-modal">
+        <div class="auth-modal-content">
+            <span class="auth-close">&times;</span>
+            <h2>Sign In / Sign Up</h2>
+            <p style="color: var(--text-light); margin-bottom: 30px;">Choose your preferred method to continue</p>
+            
+            <!-- Social Login Buttons -->
+            <div class="auth-providers">
+                <button onclick="handleGoogleSignIn()" class="auth-provider-btn google-btn">
+                    <svg width="18" height="18" viewBox="0 0 18 18" style="margin-right: 10px;">
+                        <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"></path>
+                        <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"></path>
+                        <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z"></path>
+                        <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"></path>
+                    </svg>
+                    Continue with Google
+                </button>
+
+                <button onclick="handleMicrosoftSignIn()" class="auth-provider-btn microsoft-btn">
+                    <i class="fab fa-microsoft" style="margin-right: 10px; font-size: 18px;"></i>
+                    Continue with Microsoft
+                </button>
+
+                <button onclick="handleFacebookSignIn()" class="auth-provider-btn facebook-btn">
+                    <i class="fab fa-facebook-f" style="margin-right: 10px; font-size: 18px;"></i>
+                    Continue with Facebook
+                </button>
+            </div>
+
+            <div class="auth-divider">
+                <span>OR</span>
+            </div>
+
+            <!-- Email/Password Form -->
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchAuthTab('signin')">Sign In</button>
+                <button class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</button>
+            </div>
+
+            <form id="signinForm" class="auth-form">
+                <div class="form-group">
+                    <input type="email" id="signinEmail" required placeholder="Email Address">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="signinPassword" required placeholder="Password">
+                </div>
+                <button type="submit" class="auth-submit-btn">Sign In</button>
+                <a href="#" class="forgot-password">Forgot Password?</a>
+            </form>
+
+            <form id="signupForm" class="auth-form" style="display: none;">
+                <div class="form-group">
+                    <input type="text" id="signupName" required placeholder="Full Name">
+                </div>
+                <div class="form-group">
+                    <input type="email" id="signupEmail" required placeholder="Email Address">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="signupPassword" required placeholder="Password (min 6 characters)">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="signupConfirmPassword" required placeholder="Confirm Password">
+                </div>
+                <button type="submit" class="auth-submit-btn">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase Auth functions
+        import { signInWithPopup } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        
+        // Wait for Firebase config to load, then setup handlers
+        setTimeout(() => {
+            const auth = window.firebaseAuth;
+            const provider = window.firebaseProvider;
+            
+            if (!auth || !provider) {
+                console.error('Firebase Auth not initialized!');
+                return;
+            }
+            
+            console.log('✅ Firebase Auth ready!');
+            
+            // Google Sign-In Handler
+            window.handleGoogleSignIn = async function() {
+                console.log('🔵 Google Sign-In clicked!');
+                
+                try {
+                    console.log('🔵 Opening Google popup...');
+                    const result = await signInWithPopup(auth, provider);
+                    const user = result.user;
+                    
+                    console.log('✅ Signed in:', user.email);
+                    
+                    // Close modal
+                    if (window.closeAuthModal) {
+                        window.closeAuthModal();
+                    }
+                    
+                    alert('Welcome, ' + user.displayName + '! ✨');
+                    window.location.reload();
+                } catch (error) {
+                    console.error('❌ Sign-in error:', error);
+                    if (error.code !== 'auth/popup-closed-by-user') {
+                        alert('Sign-in failed: ' + error.message);
+                    }
+                }
+            };
+        }, 500);
+        
+        // Modal functions
+        window.openAuthModal = function() {
+            const modal = document.getElementById('authModal');
+            if (modal) {
+                modal.style.display = 'block';
+            }
+        };
+        
+        window.closeAuthModal = function() {
+            const modal = document.getElementById('authModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        };
+        
+        window.switchAuthTab = function(tab) {
+            const signinForm = document.getElementById('signinForm');
+            const signupForm = document.getElementById('signupForm');
+            const tabs = document.querySelectorAll('.auth-tab');
+            
+            if (tab === 'signin') {
+                signinForm.style.display = 'flex';
+                signupForm.style.display = 'none';
+                tabs[0].classList.add('active');
+                tabs[1].classList.remove('active');
+            } else {
+                signinForm.style.display = 'none';
+                signupForm.style.display = 'flex';
+                tabs[0].classList.remove('active');
+                tabs[1].classList.add('active');
+            }
+        };
+        
+        window.handleMicrosoftSignIn = function() {
+            alert('Microsoft sign-in coming soon! 🚀\n\nPlease use Google or Email/Password.');
+        };
+        
+        window.handleFacebookSignIn = async function() {
+            console.log('🔵 Facebook Sign-In clicked!');
+            
+            const facebookProvider = window.firebaseFacebookProvider;
+            const auth = window.firebaseAuth;
+            
+            if (!auth || !facebookProvider) {
+                alert('Facebook authentication is still loading. Please try again.');
+                return;
+            }
+            
+            try {
+                console.log('🔵 Opening Facebook popup...');
+                const { signInWithPopup } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
+                const result = await signInWithPopup(auth, facebookProvider);
+                const user = result.user;
+                
+                console.log('✅ Signed in with Facebook:', user.email);
+                
+                // Close modal
+                if (window.closeAuthModal) {
+                    window.closeAuthModal();
+                }
+                
+                alert('Welcome, ' + user.displayName + '! ✨');
+                window.location.reload();
+            } catch (error) {
+                console.error('❌ Facebook sign-in error:', error);
+                if (error.code !== 'auth/popup-closed-by-user') {
+                    alert('Facebook sign-in failed: ' + error.message);
+                }
+            }
+        };
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('authModal');
+            if (event.target === modal) {
+                window.closeAuthModal();
+            }
+        };
+        
+        // Setup close button
+        document.addEventListener('DOMContentLoaded', () => {
+            const closeBtn = document.querySelector('.auth-close');
+            if (closeBtn) {
+                closeBtn.onclick = window.closeAuthModal;
+            }
+        });
+    </script>
+    <script type="module" src="firebase-config.js"></script>
+    <script type="module" src="main-script.js"></script>
+</body>
+</html>

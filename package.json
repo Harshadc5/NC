@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "google-auth-library": "^10.5.0"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
