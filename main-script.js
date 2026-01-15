@@ -87,11 +87,21 @@ if (appointmentForm) {
                 // Reset form
                 appointmentForm.reset();
                 
+                // Repopulate email field if user is signed in
+                const auth = window.firebaseAuth;
+                if (auth && auth.currentUser && auth.currentUser.email) {
+                    const enquiryEmailField = document.getElementById('enquiryEmail');
+                    if (enquiryEmailField) {
+                        enquiryEmailField.value = auth.currentUser.email;
+                        enquiryEmailField.setAttribute('readonly', 'true');
+                        enquiryEmailField.style.backgroundColor = '#f0f0f0';
+                    }
+                }
+                
                 // Show success message - NO WHATSAPP
                 alert('Thank you! Your enquiry has been submitted successfully. We will contact you soon.');
                 
                 // Refresh badge counts if user is signed in
-                const auth = window.firebaseAuth;
                 if (auth && auth.currentUser) {
                     loadUserCounts(auth.currentUser.email);
                 }

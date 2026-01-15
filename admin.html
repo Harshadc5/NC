@@ -1057,6 +1057,9 @@
                 // Reset select all checkbox
                 document.getElementById(`selectAll${type.charAt(0).toUpperCase() + type.slice(1)}`).checked = false;
                 
+                // Update delete button to hide it
+                updateDeleteButton(type);
+                
             } catch (error) {
                 console.error('Bulk delete error:', error);
                 alert(`Failed to delete some ${type}. Please try again.`);
