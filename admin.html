@@ -207,6 +207,83 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
 
+        /* Status Badge Styles */
+        .status-badge {
+            padding: 6px 16px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+            text-transform: uppercase;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .confirm-btn {
+            background: #28a745;
+            color: white;
+        }
+        .confirm-btn:hover {
+            background: #218838;
+        }
+        .reject-btn {
+            background: #ffc107;
+            color: #000;
+        }
+        .reject-btn:hover {
+            background: #e0a800;
+        }
+        .status-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .bulk-confirm-btn {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        .bulk-confirm-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .bulk-reject-btn {
+            background: #ffc107;
+            color: #000;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        .bulk-reject-btn:hover {
+            background: #e0a800;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
         /* Mobile Responsive Styles */
         @media (max-width: 768px) {
             .admin-container {
@@ -496,14 +573,19 @@
                 <div class="stat-label">Total Appointments</div>
             </div>
             <div class="stat-card">
-                <i class="fas fa-calendar-day" style="font-size: 2rem; color: var(--success-color);"></i>
-                <div class="stat-number" id="todayAppointments">0</div>
-                <div class="stat-label">Today's Appointments</div>
+                <i class="fas fa-hourglass-half" style="font-size: 2rem; color: #856404;"></i>
+                <div class="stat-number" id="pendingAppointments">0</div>
+                <div class="stat-label">Pending</div>
             </div>
             <div class="stat-card">
-                <i class="fas fa-clock" style="font-size: 2rem; color: var(--secondary-color);"></i>
-                <div class="stat-number" id="recentAppointments">0</div>
-                <div class="stat-label">Last 7 Days</div>
+                <i class="fas fa-check-circle" style="font-size: 2rem; color: var(--success-color);"></i>
+                <div class="stat-number" id="confirmedAppointments">0</div>
+                <div class="stat-label">Confirmed</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-times-circle" style="font-size: 2rem; color: #e74c3c;"></i>
+                <div class="stat-number" id="rejectedAppointments">0</div>
+                <div class="stat-label">Rejected</div>
             </div>
         </div>
 
@@ -543,11 +625,14 @@
                     </button>
                 </div>
             </div>
-            <div style="display: flex; gap: 15px; align-items: center; margin: 15px 0; padding: 15px; background: var(--card-bg); border-radius: 10px;">
+            <div style="display: flex; gap: 15px; align-items: center; margin: 15px 0; padding: 15px; background: var(--card-bg); border-radius: 10px; flex-wrap: wrap;">
                 <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
                     <input type="checkbox" id="selectAllAppointments" onchange="toggleSelectAll('appointments')" style="width: 18px; height: 18px; cursor: pointer;">
                     <span style="font-weight: 600;">Select All</span>
                 </label>
+                <button id="rejectSelectedAppointments" onclick="bulkUpdateStatus('appointments', 'Rejected')" class="bulk-reject-btn" style="display: none;">
+                    <i class="fas fa-times"></i> Reject Selected (<span id="selectedRejectCount">0</span>)
+                </button>
                 <button id="deleteSelectedAppointments" onclick="deleteSelected('appointments')" class="bulk-delete-btn" style="display: none;">
                     <i class="fas fa-trash"></i> Delete Selected (<span id="selectedAppointmentsCount">0</span>)
                 </button>
@@ -613,8 +698,9 @@
                 
                 // Show loading state for appointments
                 document.getElementById('totalAppointments').textContent = '...';
-                document.getElementById('todayAppointments').textContent = '...';
-                document.getElementById('recentAppointments').textContent = '...';
+                document.getElementById('pendingAppointments').textContent = '...';
+                document.getElementById('confirmedAppointments').textContent = '...';
+                document.getElementById('rejectedAppointments').textContent = '...';
                 
                 loadEnquiries();
                 loadAppointments();
@@ -863,32 +949,15 @@
         function updateAppointmentStats() {
             const total = currentAppointments.length;
             
-            // Get today's date at midnight
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
-            // Count today's appointments
-            const todayCount = currentAppointments.filter(a => {
-                if (!a.timestamp) return false;
-                const appointmentDate = a.timestamp.toDate ? a.timestamp.toDate() : new Date(a.timestamp);
-                appointmentDate.setHours(0, 0, 0, 0);
-                return appointmentDate.getTime() === today.getTime();
-            }).length;
-            
-            // Count last 7 days appointments
-            const sevenDaysAgo = new Date();
-            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-            sevenDaysAgo.setHours(0, 0, 0, 0);
-            
-            const recentCount = currentAppointments.filter(a => {
-                if (!a.timestamp) return false;
-                const appointmentDate = a.timestamp.toDate ? a.timestamp.toDate() : new Date(a.timestamp);
-                return appointmentDate >= sevenDaysAgo;
-            }).length;
+            // Count by status
+            const pendingCount = currentAppointments.filter(a => !a.status || a.status === 'Pending').length;
+            const confirmedCount = currentAppointments.filter(a => a.status === 'Confirmed').length;
+            const rejectedCount = currentAppointments.filter(a => a.status === 'Rejected').length;
 
             document.getElementById('totalAppointments').textContent = total;
-            document.getElementById('todayAppointments').textContent = todayCount;
-            document.getElementById('recentAppointments').textContent = recentCount;
+            document.getElementById('pendingAppointments').textContent = pendingCount;
+            document.getElementById('confirmedAppointments').textContent = confirmedCount;
+            document.getElementById('rejectedAppointments').textContent = rejectedCount;
         }
 
         // Display appointments
@@ -904,19 +973,48 @@
                 const appointmentDate = appointment.timestamp?.toDate ? appointment.timestamp.toDate() : new Date(appointment.timestamp);
                 const formattedDate = appointmentDate.toLocaleString();
                 
+                const status = appointment.status || 'Pending';
+                const statusClass = status.toLowerCase();
+                
                 // Format time slots
                 let timeSlotsHTML = '';
                 if (appointment.timeSlots && appointment.timeSlots.length > 0) {
-                    timeSlotsHTML = `
-                        <div class="enquiry-message" style="background: #f0f4ff; border-left: 4px solid var(--primary-color);">
-                            <strong><i class="fas fa-clock"></i> Preferred Time Slots:</strong><br>
-                            ${appointment.timeSlots.map((slot, index) => `
-                                <div style="margin-top: 8px; padding: 8px; background: white; border-radius: 5px;">
-                                    <strong>Option ${slot.preference || (index + 1)}:</strong> ${slot.dateTime || (slot.date + ' at ' + slot.time)}
+                    const confirmedSlot = appointment.confirmedTimeSlot;
+                    
+                    if (status === 'Confirmed' && confirmedSlot) {
+                        // Show only confirmed time slot
+                        timeSlotsHTML = `
+                            <div class="enquiry-message" style="background: #d4edda; border-left: 4px solid #28a745;">
+                                <strong><i class="fas fa-check-circle"></i> Confirmed Time Slot:</strong><br>
+                                <div style="margin-top: 8px; padding: 12px; background: white; border-radius: 5px; font-weight: 600; color: #155724;">
+                                    📅 ${confirmedSlot}
                                 </div>
-                            `).join('')}
-                        </div>
-                    `;
+                            </div>
+                        `;
+                    } else {
+                        // Show all time slots with radio buttons for pending appointments
+                        timeSlotsHTML = `
+                            <div class="enquiry-message" style="background: #f0f4ff; border-left: 4px solid var(--primary-color);">
+                                <strong><i class="fas fa-clock"></i> Preferred Time Slots:</strong>
+                                ${status === 'Pending' ? '<p style="font-size: 0.85rem; color: #666; margin-top: 5px;">Select one to confirm:</p>' : '<br>'}
+                                ${appointment.timeSlots.map((slot, index) => {
+                                    const slotDateTime = slot.dateTime || (slot.date + ' at ' + slot.time);
+                                    return `
+                                        <div style="margin-top: 8px; padding: 8px; background: white; border-radius: 5px; display: flex; align-items: center; gap: 10px;">
+                                            ${status === 'Pending' ? `
+                                                <input type="radio" name="timeSlot_${appointment.id}" value="${slotDateTime}" id="slot_${appointment.id}_${index}" style="width: 18px; height: 18px; cursor: pointer;">
+                                                <label for="slot_${appointment.id}_${index}" style="cursor: pointer; flex: 1;">
+                                                    <strong>Option ${slot.preference || (index + 1)}:</strong> ${slotDateTime}
+                                                </label>
+                                            ` : `
+                                                <strong>Option ${slot.preference || (index + 1)}:</strong> ${slotDateTime}
+                                            `}
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        `;
+                    }
                 }
                 
                 return `
@@ -926,6 +1024,7 @@
                         <div style="flex: 1;">
                             <div class="enquiry-name">${appointment.name}</div>
                         </div>
+                        <span class="status-badge status-${statusClass}">${status}</span>
                         <div class="enquiry-date">${formattedDate}</div>
                     </div>
                     <div class="enquiry-details">
@@ -953,8 +1052,24 @@
                     ${timeSlotsHTML}
                     ${appointment.message && appointment.message !== 'No additional message' ? `<div class="enquiry-message"><strong>Message:</strong><br>${appointment.message}</div>` : ''}
                     <div class="enquiry-actions">
+                        ${status === 'Pending' ? `
+                            <button onclick="confirmAppointmentWithSlot('${appointment.id}')" class="action-btn confirm-btn">
+                                <i class="fas fa-check"></i> Confirm Appointment
+                            </button>
+                            <button onclick="updateAppointmentStatus('${appointment.id}', 'Rejected')" class="action-btn reject-btn">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        ` : status === 'Confirmed' ? `
+                            <button onclick="updateAppointmentStatus('${appointment.id}', 'Pending')" class="action-btn" style="background: #6c757d; color: white;">
+                                <i class="fas fa-undo"></i> Mark as Pending
+                            </button>
+                        ` : `
+                            <button onclick="updateAppointmentStatus('${appointment.id}', 'Pending')" class="action-btn" style="background: #6c757d; color: white;">
+                                <i class="fas fa-undo"></i> Mark as Pending
+                            </button>
+                        `}
                         <button onclick="replyWhatsApp('${appointment.name}', '${appointment.phone}')" class="action-btn whatsapp-btn">
-                            <i class="fab fa-whatsapp"></i> Reply on WhatsApp
+                            <i class="fab fa-whatsapp"></i> WhatsApp
                         </button>
                         <button onclick="deleteAppointment('${appointment.id}')" class="action-btn delete-btn">
                             <i class="fas fa-trash"></i> Delete
@@ -979,6 +1094,72 @@
             );
             displayAppointments(filtered);
         });
+
+        // Confirm appointment with selected time slot
+        window.confirmAppointmentWithSlot = async (id) => {
+            // Get selected time slot
+            const selectedSlot = document.querySelector(`input[name="timeSlot_${id}"]:checked`);
+            
+            if (!selectedSlot) {
+                alert('⚠️ Please select a time slot before confirming the appointment.');
+                return;
+            }
+            
+            const timeSlotValue = selectedSlot.value;
+            
+            if (confirm(`Confirm this appointment for:\n\n📅 ${timeSlotValue}\n\nProceed?`)) {
+                try {
+                    const { updateDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+                    await updateDoc(doc(db, 'appointments', id), {
+                        status: 'Confirmed',
+                        confirmedTimeSlot: timeSlotValue,
+                        statusUpdatedAt: new Date().toISOString()
+                    });
+                    
+                    alert(`✅ Appointment confirmed successfully!\n\nConfirmed Time: ${timeSlotValue}`);
+                } catch (error) {
+                    console.error('Status update error:', error);
+                    alert('Failed to confirm appointment. Please try again.');
+                }
+            }
+        };
+
+        // Update appointment status
+        window.updateAppointmentStatus = async (id, newStatus) => {
+            const statusMessages = {
+                'Confirmed': 'confirm this appointment',
+                'Rejected': 'reject this appointment',
+                'Pending': 'mark this appointment as pending'
+            };
+            
+            if (confirm(`Are you sure you want to ${statusMessages[newStatus]}?`)) {
+                try {
+                    const { updateDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+                    
+                    const updateData = {
+                        status: newStatus,
+                        statusUpdatedAt: new Date().toISOString()
+                    };
+                    
+                    // Clear confirmed time slot if marking as pending or rejected
+                    if (newStatus !== 'Confirmed') {
+                        updateData.confirmedTimeSlot = null;
+                    }
+                    
+                    await updateDoc(doc(db, 'appointments', id), updateData);
+                    
+                    const successMessages = {
+                        'Confirmed': 'Appointment confirmed successfully! ✅',
+                        'Rejected': 'Appointment rejected.',
+                        'Pending': 'Appointment marked as pending.'
+                    };
+                    alert(successMessages[newStatus]);
+                } catch (error) {
+                    console.error('Status update error:', error);
+                    alert('Failed to update appointment status. Please try again.');
+                }
+            }
+        };
 
         // Delete appointment
         window.deleteAppointment = async (id) => {
@@ -1019,13 +1200,81 @@
             if (count > 0) {
                 deleteButton.style.display = 'inline-flex';
                 countSpan.textContent = count;
+                
+                // Show reject button for appointments (no confirm button for bulk)
+                if (type === 'appointments') {
+                    const rejectButton = document.getElementById('rejectSelectedAppointments');
+                    const rejectCountSpan = document.getElementById('selectedRejectCount');
+                    
+                    if (rejectButton) {
+                        rejectButton.style.display = 'inline-flex';
+                        rejectCountSpan.textContent = count;
+                    }
+                }
             } else {
                 deleteButton.style.display = 'none';
+                
+                // Hide reject button for appointments
+                if (type === 'appointments') {
+                    const rejectButton = document.getElementById('rejectSelectedAppointments');
+                    
+                    if (rejectButton) {
+                        rejectButton.style.display = 'none';
+                    }
+                }
             }
             
             // Update select all checkbox state
             const selectAllCheckbox = document.getElementById(`selectAll${type.charAt(0).toUpperCase() + type.slice(1)}`);
             selectAllCheckbox.checked = count > 0 && count === checkboxes.length;
+        };
+
+        // Bulk update appointment status
+        window.bulkUpdateStatus = async (type, newStatus) => {
+            if (type !== 'appointments') return;
+            
+            const checkboxes = document.querySelectorAll('.appointment-checkbox:checked');
+            const selectedIds = Array.from(checkboxes).map(cb => cb.getAttribute('data-id'));
+            
+            if (selectedIds.length === 0) {
+                alert('No appointments selected');
+                return;
+            }
+            
+            const statusAction = newStatus === 'Confirmed' ? 'confirm' : 'reject';
+            const confirmMessage = `Are you sure you want to ${statusAction} ${selectedIds.length} appointment(s)?`;
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+            
+            try {
+                const { updateDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+                
+                // Update all selected appointments
+                const updatePromises = selectedIds.map(id => 
+                    updateDoc(doc(db, 'appointments', id), {
+                        status: newStatus,
+                        statusUpdatedAt: new Date().toISOString()
+                    })
+                );
+                
+                await Promise.all(updatePromises);
+                
+                const successMessage = newStatus === 'Confirmed' 
+                    ? `✅ Successfully confirmed ${selectedIds.length} appointment(s)!`
+                    : `Successfully rejected ${selectedIds.length} appointment(s).`;
+                
+                alert(successMessage);
+                
+                // Reset checkboxes
+                document.getElementById('selectAllAppointments').checked = false;
+                updateDeleteButton('appointments');
+                
+            } catch (error) {
+                console.error('Bulk status update error:', error);
+                alert('Failed to update some appointments. Please try again.');
+            }
         };
 
         // Delete selected items

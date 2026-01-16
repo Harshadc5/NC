@@ -1274,3 +1274,24 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+/* hey bhuydgshcj
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 8px 25px rgba(0, 102, 204, 0.4);
+  }
+  50% {
+    box-shadow: 0 8px 35px rgba(0, 102, 204, 0.6), 0 0 20px rgba(0, 102, 204, 0.3);
+  }
+} */

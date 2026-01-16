@@ -934,12 +934,36 @@ window.removeProfilePicture = async function() {
 // Show Appointment Modal
 function showAppointmentModal(appointment) {
     const slots = appointment.timeSlots || [];
-    const slotsHTML = slots.map(slot => `
-        <div style="background: var(--light-color); padding: 12px; border-radius: 8px; margin-bottom: 10px;">
-            <strong>Preference ${slot.preference}:</strong><br>
-            📅 ${slot.dateTime || slot.date + ' ' + slot.time}
-        </div>
-    `).join('');
+    const status = appointment.status || 'Pending';
+    const confirmedSlot = appointment.confirmedTimeSlot;
+    
+    let slotsHTML = '';
+    if (status === 'Confirmed' && confirmedSlot) {
+        // Show only confirmed time slot
+        slotsHTML = `
+            <div style="background: #d4edda; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #28a745;">
+                <strong style="color: #155724;"><i class="fas fa-check-circle"></i> Confirmed Time:</strong><br>
+                <div style="margin-top: 8px; font-size: 1.1rem; font-weight: 600; color: #155724;">
+                    📅 ${confirmedSlot}
+                </div>
+            </div>
+        `;
+    } else {
+        // Show all preferences
+        slotsHTML = slots.map(slot => `
+            <div style="background: var(--light-color); padding: 12px; border-radius: 8px; margin-bottom: 10px;">
+                <strong>Preference ${slot.preference}:</strong><br>
+                📅 ${slot.dateTime || slot.date + ' ' + slot.time}
+            </div>
+        `).join('');
+    }
+    
+    const statusStyles = {
+        'Pending': 'background: #fff3cd; color: #856404;',
+        'Confirmed': 'background: #d4edda; color: #155724;',
+        'Rejected': 'background: #f8d7da; color: #721c24;'
+    };
+    const statusStyle = statusStyles[status] || statusStyles['Pending'];
     
     const modalHTML = `
         <div class="modal-overlay" onclick="closeModal(this)">
@@ -954,11 +978,11 @@ function showAppointmentModal(appointment) {
                     <p><strong>Phone:</strong> ${appointment.phone}</p>
                     <p><strong>Email:</strong> ${appointment.email}</p>
                     <p><strong>Age:</strong> ${appointment.age} | <strong>Gender:</strong> ${appointment.gender}</p>
-                    <p><strong>Status:</strong> <span style="background: #fff3cd; padding: 4px 12px; border-radius: 12px; color: #856404;">${appointment.status || 'Pending'}</span></p>
+                    <p><strong>Status:</strong> <span style="${statusStyle} padding: 4px 12px; border-radius: 12px; font-weight: 600;">${status}</span></p>
                     <p><strong>Submitted:</strong> ${appointment.submittedAt}</p>
                 </div>
                 
-                <h4 style="margin: 15px 0;">Time Slot Preferences:</h4>
+                <h4 style="margin: 15px 0;">${status === 'Confirmed' && confirmedSlot ? 'Confirmed Time Slot:' : 'Time Slot Preferences:'}</h4>
                 ${slotsHTML}
                 
                 ${appointment.message && appointment.message !== 'No additional message' ? `
@@ -1293,18 +1317,39 @@ window.checkAuthAndRedirect = function() {
 function showAllAppointmentsModal(appointments) {
     const appointmentsHTML = appointments.map((appointment, index) => {
         const slots = appointment.timeSlots || [];
-        const slotsHTML = slots.map(slot => `
-            <div style="background: #f8f9fa; padding: 8px; border-radius: 6px; margin: 5px 0; font-size: 0.85rem;">
-                <strong>Pref ${slot.preference}:</strong> ${slot.dateTime || slot.date + ' ' + slot.time}
-            </div>
-        `).join('');
+        const status = appointment.status || 'Pending';
+        const confirmedSlot = appointment.confirmedTimeSlot;
+        
+        let slotsHTML = '';
+        if (status === 'Confirmed' && confirmedSlot) {
+            // Show only confirmed time slot
+            slotsHTML = `
+                <div style="background: #d4edda; padding: 10px; border-radius: 6px; margin: 5px 0; font-size: 0.9rem; border-left: 3px solid #28a745;">
+                    <strong style="color: #155724;"><i class="fas fa-check-circle"></i> Confirmed:</strong> ${confirmedSlot}
+                </div>
+            `;
+        } else {
+            // Show all preferences
+            slotsHTML = slots.map(slot => `
+                <div style="background: #f8f9fa; padding: 8px; border-radius: 6px; margin: 5px 0; font-size: 0.85rem;">
+                    <strong>Pref ${slot.preference}:</strong> ${slot.dateTime || slot.date + ' ' + slot.time}
+                </div>
+            `).join('');
+        }
+        
+        const statusStyles = {
+            'Pending': 'background: #fff3cd; color: #856404;',
+            'Confirmed': 'background: #d4edda; color: #155724;',
+            'Rejected': 'background: #f8d7da; color: #721c24;'
+        };
+        const statusStyle = statusStyles[status] || statusStyles['Pending'];
         
         return `
             <div style="background: white; border: 2px solid #eee; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                     <h4 style="color: var(--primary-color); margin: 0;">Appointment #${index + 1}</h4>
-                    <span style="background: #fff3cd; padding: 4px 12px; border-radius: 12px; color: #856404; font-size: 0.85rem; font-weight: 600;">
-                        ${appointment.status || 'Pending'}
+                    <span style="${statusStyle} padding: 4px 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">
+                        ${status}
                     </span>
                 </div>
                 
@@ -1316,7 +1361,7 @@ function showAllAppointmentsModal(appointments) {
                 </div>
                 
                 <div style="margin-top: 10px;">
-                    <strong>Time Slots:</strong>
+                    <strong>${status === 'Confirmed' && confirmedSlot ? 'Confirmed Time Slot:' : 'Time Slots:'}</strong>
                     ${slotsHTML}
                 </div>
                 
