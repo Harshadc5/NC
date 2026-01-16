@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Nikhil Chaudhari</title>
     <link rel="icon" type="image/png" href="favicon.png">
+    
+    <!-- Preconnect to speed up authentication -->
+    <link rel="preconnect" href="https://accounts.google.com">
+    <link rel="preconnect" href="https://www.gstatic.com">
+    <link rel="preconnect" href="https://apis.google.com">
+    <link rel="dns-prefetch" href="https://accounts.google.com">
+    
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -750,11 +757,9 @@
                 });
                 
                 isDataLoaded = true;
-                // Force stats update after data is loaded
-                setTimeout(() => {
-                    updateStats();
-                    displayEnquiries(currentEnquiries);
-                }, 100);
+                // Update stats immediately
+                updateStats();
+                displayEnquiries(currentEnquiries);
             });
         }
 
@@ -938,10 +943,9 @@
                     currentAppointments.push({ id: doc.id, ...doc.data() });
                 });
                 
-                setTimeout(() => {
-                    updateAppointmentStats();
-                    displayAppointments(currentAppointments);
-                }, 100);
+                // Update immediately
+                updateAppointmentStats();
+                displayAppointments(currentAppointments);
             });
         }
 

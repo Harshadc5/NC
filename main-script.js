@@ -1,5 +1,5 @@
 // Firebase Authentication imports
-import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider, onAuthStateChanged, signOut, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 // Mobile Navigation Toggle
 const hamburger = document.querySelector('.hamburger');
@@ -282,32 +282,44 @@ window.addEventListener('load', () => {
 
 // Wait for Firebase to be initialized
 let auth, provider;
-setTimeout(() => {
-    if (window.firebaseApp) {
-        auth = getAuth(window.firebaseApp);
-        provider = new GoogleAuthProvider();
-        
-        // Attach click handler to auth modal button
-        const authModalBtn = document.getElementById('authModalBtn');
-        if (authModalBtn) {
-            authModalBtn.addEventListener('click', openAuthModal);
-            console.log('Auth modal button listener attached');
+
+// Try immediate initialization
+if (window.firebaseApp) {
+    auth = getAuth(window.firebaseApp);
+    provider = new GoogleAuthProvider();
+    initializeAuth();
+} else {
+    // Fallback with minimal delay
+    setTimeout(() => {
+        if (window.firebaseApp) {
+            auth = getAuth(window.firebaseApp);
+            provider = new GoogleAuthProvider();
+            initializeAuth();
         }
-        
-        // Check if user is already signed in
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                const userInfo = {
-                    name: user.displayName,
-                    email: user.email,
-                    picture: user.photoURL
-                };
-                updateUserUI(userInfo);
-                checkAdminAccess(user.email);
-            }
-        });
+    }, 100);
+}
+
+function initializeAuth() {
+    // Attach click handler to auth modal button
+    const authModalBtn = document.getElementById('authModalBtn');
+    if (authModalBtn) {
+        authModalBtn.addEventListener('click', openAuthModal);
+        console.log('Auth modal button listener attached');
     }
-}, 500);
+    
+    // Check if user is already signed in
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            const userInfo = {
+                name: user.displayName,
+                email: user.email,
+                picture: user.photoURL
+            };
+            updateUserUI(userInfo);
+            checkAdminAccess(user.email);
+        }
+    });
+}
 
 // Handle Google Sign-In
 async function handleGoogleSignIn() {
@@ -319,6 +331,11 @@ async function handleGoogleSignIn() {
     }
     
     try {
+        // Set select_account for faster UX
+        provider.setCustomParameters({
+            prompt: 'select_account'
+        });
+        
         console.log('Opening sign-in popup...');
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
@@ -1087,6 +1104,185 @@ window.handleSignOut = async function() {
     }
 }
 
+// Microsoft Sign-In Handler
+window.handleMicrosoftSignIn = async function() {
+    console.log('🔵 Microsoft Sign-In clicked from main-script!');
+    
+    const auth = window.firebaseAuth;
+    if (!auth) {
+        alert('⚠️ Authentication is still loading.\n\nPlease wait a moment and try again.');
+        return;
+    }
+    
+    try {
+        // Create Microsoft provider
+        const microsoftProvider = new OAuthProvider('microsoft.com');
+        microsoftProvider.setCustomParameters({
+            prompt: 'select_account',
+            tenant: 'common' // Allows both personal and work/school accounts
+        });
+        
+        console.log('🔵 Opening Microsoft popup...');
+        const result = await signInWithPopup(auth, microsoftProvider);
+        const user = result.user;
+        
+        console.log('✅ Microsoft sign-in successful:', user.email);
+        console.log('User Info:', {
+            displayName: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL
+        });
+        
+        // Close modal if exists
+        if (window.closeAuthModal) {
+            window.closeAuthModal();
+        }
+        
+        alert('Welcome, ' + (user.displayName || user.email) + '! ✨\n\nSuccessfully signed in with Microsoft.');
+        
+        // Reload to update UI
+        setTimeout(() => {
+            window.location.reload();
+        }, 500);
+        
+    } catch (error) {
+        console.error('❌ Microsoft sign-in error:', error);
+        console.error('Error code:', error.code);
+        console.error('Error message:', error.message);
+        
+        if (error.code === 'auth/popup-closed-by-user') {
+            console.log('User closed the popup');
+        } else if (error.code === 'auth/cancelled-popup-request') {
+            console.log('Popup request cancelled');
+        } else if (error.code === 'auth/popup-blocked') {
+            alert('❌ Popup Blocked\n\nYour browser blocked the Microsoft sign-in popup.\n\nPlease allow popups for this site and try again.');
+        } else if (error.code === 'auth/unauthorized-domain') {
+            alert('❌ Unauthorized Domain\n\nThis domain is not authorized for Microsoft sign-in.\n\nPlease contact support.');
+        } else if (error.code === 'auth/account-exists-with-different-credential') {
+            alert('❌ Account Already Exists\n\nAn account with this email already exists using a different sign-in method.\n\nPlease sign in using your original method.');
+        } else {
+            alert('❌ Microsoft Sign-In Failed\n\nError: ' + error.message + '\n\nPlease try again or use another sign-in method.');
+        }
+    }
+};
+
+// Microsoft Sign-In Handler
+window.handleMicrosoftSignIn = async function() {
+    console.log('🔵 Microsoft Sign-In clicked from main-script!');
+    
+    const auth = window.firebaseAuth;
+    if (!auth) {
+        alert('⚠️ Authentication is still loading.\n\nPlease wait a moment and try again.');
+        return;
+    }
+    
+    try {
+        // Create Microsoft provider
+        const microsoftProvider = new OAuthProvider('microsoft.com');
+        microsoftProvider.setCustomParameters({
+            prompt: 'select_account',
+            tenant: 'common' // Allows both personal and work/school accounts
+        });
+        
+        console.log('🔵 Opening Microsoft popup...');
+        const result = await signInWithPopup(auth, microsoftProvider);
+        const user = result.user;
+        
+        console.log('✅ Microsoft sign-in successful:', user.email);
+        console.log('User Info:', {
+            displayName: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL
+        });
+        
+        // Close modal if exists
+        if (window.closeAuthModal) {
+            window.closeAuthModal();
+        }
+        
+        alert('Welcome, ' + (user.displayName || user.email) + '! ✨\n\nSuccessfully signed in with Microsoft.');
+        
+        // Reload to update UI
+        setTimeout(() => {
+            window.location.reload();
+        }, 500);
+        
+    } catch (error) {
+        console.error('❌ Microsoft sign-in error:', error);
+        console.error('Error code:', error.code);
+        console.error('Error message:', error.message);
+        
+        if (error.code === 'auth/popup-closed-by-user') {
+            console.log('User closed the popup');
+        } else if (error.code === 'auth/cancelled-popup-request') {
+            console.log('Popup request cancelled');
+        } else if (error.code === 'auth/popup-blocked') {
+            alert('❌ Popup Blocked\n\nYour browser blocked the Microsoft sign-in popup.\n\nPlease allow popups for this site and try again.');
+        } else if (error.code === 'auth/unauthorized-domain') {
+            alert('❌ Unauthorized Domain\n\nThis domain is not authorized for Microsoft sign-in.\n\nPlease contact support.');
+        } else if (error.code === 'auth/account-exists-with-different-credential') {
+            alert('❌ Account Already Exists\n\nAn account with this email already exists using a different sign-in method.\n\nPlease sign in using your original method.');
+        } else {
+            alert('❌ Microsoft Sign-In Failed\n\nError: ' + error.message + '\n\nPlease try again or use another sign-in method.');
+        }
+    }
+};
+
+// Forgot Password Handler
+window.handleForgotPassword = async function(event) {
+    if (event) event.preventDefault();
+    
+    if (!auth) {
+        alert('Authentication is still loading. Please try again.');
+        return;
+    }
+    
+    const email = prompt('🔐 Password Reset\n\nEnter your registered email address:');
+    
+    if (!email) {
+        return; // User cancelled
+    }
+    
+    // Trim whitespace
+    const trimmedEmail = email.trim();
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+        alert('❌ Invalid Email Format\n\nPlease enter a valid email address.');
+        return;
+    }
+    
+    try {
+        // Send reset email (don't check if user exists - security best practice)
+        console.log('Sending password reset email to:', trimmedEmail);
+        await sendPasswordResetEmail(auth, trimmedEmail, {
+            url: window.location.origin,
+            handleCodeInApp: false
+        });
+        
+        // Always show generic message (doesn't reveal if account exists)
+        alert('✅ Password Reset Request Received\n\nIf you have an account with this email:\n' + trimmedEmail + '\n\nYou will receive password reset instructions within a few minutes.\n\n📧 Please check:\n• Your inbox\n• Spam/Junk folder\n\n⏰ Link expires in 1 hour');
+        
+    } catch (error) {
+        console.error('Password reset error:', error);
+        console.error('Error code:', error.code);
+        console.error('Error message:', error.message);
+        
+        if (error.code === 'auth/invalid-email') {
+            alert('❌ Invalid Email Address\n\nPlease enter a valid email format.');
+        } else if (error.code === 'auth/too-many-requests') {
+            alert('⚠️ Too Many Attempts\n\nToo many password reset requests.\n\nPlease try again in 15 minutes.');
+        } else if (error.code === 'auth/network-request-failed') {
+            alert('❌ Network Error\n\nPlease check your internet connection and try again.');
+        } else if (error.code === 'auth/missing-email') {
+            alert('❌ Missing Email\n\nPlease provide an email address.');
+        } else {
+            alert('❌ Password Reset Failed\n\nError: ' + error.message + '\n\nPlease try again or contact support.');
+        }
+    }
+};
+
 // Firebase auth state listener handles auto sign-in
 
 // Admin email configuration
@@ -1160,11 +1356,6 @@ window.switchAuthTab = function(tab) {
         tabs[0].classList.remove('active');
         tabs[1].classList.add('active');
     }
-};
-
-// Microsoft Sign In
-window.handleMicrosoftSignIn = function() {
-    alert('Microsoft authentication will be available soon!\n\nPlease use Google or Email/Password for now.');
 };
 
 // Facebook Sign In

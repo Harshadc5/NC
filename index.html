@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nikhil Chaudhari - Your Trusted Dentist</title>
     <link rel="icon" type="image/png" href="favicon.png">
+    
+    <!-- Preconnect to speed up external resources -->
+    <link rel="preconnect" href="https://accounts.google.com">
+    <link rel="preconnect" href="https://www.gstatic.com">
+    <link rel="preconnect" href="https://apis.google.com">
+    <link rel="preconnect" href="https://login.microsoftonline.com">
+    <link rel="dns-prefetch" href="https://accounts.google.com">
+    <link rel="dns-prefetch" href="https://www.gstatic.com">
+    <link rel="dns-prefetch" href="https://login.microsoftonline.com">
+    
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -596,7 +606,7 @@
                     <input type="password" id="signinPassword" required placeholder="Password">
                 </div>
                 <button type="submit" class="auth-submit-btn">Sign In</button>
-                <a href="#" class="forgot-password">Forgot Password?</a>
+                <a href="#" class="forgot-password" onclick="handleForgotPassword(event)">Forgot Password?</a>
             </form>
 
             <form id="signupForm" class="auth-form" style="display: none;">
@@ -620,7 +630,7 @@
     <!-- Firebase SDK -->
     <script type="module">
         // Import Firebase Auth functions
-        import { signInWithPopup } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { signInWithPopup, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
         
         // Wait for Firebase config to load, then setup handlers
         setTimeout(() => {
@@ -659,7 +669,7 @@
                     }
                 }
             };
-        }, 500);
+        }, 100);
         
         // Modal functions
         window.openAuthModal = function() {
@@ -694,8 +704,112 @@
             }
         };
         
-        window.handleMicrosoftSignIn = function() {
-            alert('Microsoft sign-in coming soon! 🚀\n\nPlease use Google or Email/Password.');
+        // Microsoft Sign-In Handler
+        window.handleMicrosoftSignIn = async function() {
+            console.log('🔵 Microsoft Sign-In clicked!');
+            
+            const microsoftProvider = window.firebaseMicrosoftProvider;
+            const auth = window.firebaseAuth;
+            
+            if (!auth || !microsoftProvider) {
+                alert('⚠️ Authentication is still loading.\n\nPlease wait a moment and try again.');
+                return;
+            }
+            
+            try {
+                console.log('🔵 Opening Microsoft popup...');
+                const result = await signInWithPopup(auth, microsoftProvider);
+                const user = result.user;
+                
+                console.log('✅ Microsoft sign-in successful:', user.email);
+                console.log('User Info:', {
+                    displayName: user.displayName,
+                    email: user.email,
+                    photoURL: user.photoURL
+                });
+                
+                // Close modal
+                if (window.closeAuthModal) {
+                    window.closeAuthModal();
+                }
+                
+                alert('Welcome, ' + (user.displayName || user.email) + '! ✨\n\nSuccessfully signed in with Microsoft.');
+                window.location.reload();
+            } catch (error) {
+                console.error('❌ Microsoft sign-in error:', error);
+                console.error('Error code:', error.code);
+                console.error('Error message:', error.message);
+                
+                if (error.code === 'auth/popup-closed-by-user') {
+                    console.log('User closed the popup');
+                } else if (error.code === 'auth/cancelled-popup-request') {
+                    console.log('Popup request cancelled');
+                } else if (error.code === 'auth/popup-blocked') {
+                    alert('❌ Popup Blocked\n\nYour browser blocked the Microsoft sign-in popup.\n\nPlease allow popups for this site and try again.');
+                } else if (error.code === 'auth/unauthorized-domain') {
+                    alert('❌ Unauthorized Domain\n\nThis domain is not authorized for Microsoft sign-in.\n\nPlease contact support.');
+                } else if (error.code === 'auth/account-exists-with-different-credential') {
+                    alert('❌ Account Already Exists\n\nAn account with this email already exists using a different sign-in method.\n\nPlease sign in using your original method.');
+                } else {
+                    alert('❌ Microsoft Sign-In Failed\n\nError: ' + error.message + '\n\nPlease try again or use another sign-in method.');
+                }
+            }
+        };
+        
+        // Forgot Password Handler
+        window.handleForgotPassword = async function(event) {
+            event.preventDefault();
+            
+            const auth = window.firebaseAuth;
+            if (!auth) {
+                alert('Authentication is still loading. Please try again.');
+                return;
+            }
+            
+            const email = prompt('🔐 Password Reset\n\nEnter your registered email address:');
+            
+            if (!email) {
+                return; // User cancelled
+            }
+            
+            // Trim whitespace
+            const trimmedEmail = email.trim();
+            
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(trimmedEmail)) {
+                alert('❌ Invalid Email Format\n\nPlease enter a valid email address.');
+                return;
+            }
+            
+            try {
+                // Send reset email (don't check if user exists - security best practice)
+                console.log('Sending password reset email to:', trimmedEmail);
+                await sendPasswordResetEmail(auth, trimmedEmail, {
+                    url: window.location.origin,
+                    handleCodeInApp: false
+                });
+                
+                // Always show generic message (doesn't reveal if account exists)
+                alert('✅ Password Reset Request Received\n\nIf you have an account with this email:\n' + trimmedEmail + '\n\nYou will receive password reset instructions within a few minutes.\n\n📧 Please check:\n• Your inbox\n• Spam/Junk folder\n\n⏰ Link expires in 1 hour');
+                
+            } catch (error) {
+                console.error('Password reset error:', error);
+                console.error('Error code:', error.code);
+                console.error('Error message:', error.message);
+                
+                if (error.code === 'auth/invalid-email') {
+                    alert('❌ Invalid Email Address\n\nPlease enter a valid email format.');
+                } else if (error.code === 'auth/too-many-requests') {
+                    alert('⚠️ Too Many Attempts\n\nToo many password reset requests.\n\nPlease try again in 15 minutes.');
+                } else if (error.code === 'auth/network-request-failed') {
+                    alert('❌ Network Error\n\nPlease check your internet connection and try again.');
+                } else if (error.code === 'auth/missing-email') {
+                    alert('❌ Missing Email\n\nPlease provide an email address.');
+                } else {
+                    alert('❌ Password Reset Failed\n\nError: ' + error.message + '\n\nPlease try again or contact support.');
+                }
+            }
         };
         
         window.handleFacebookSignIn = async function() {
@@ -748,7 +862,7 @@
             }
         });
     </script>
-    <script type="module" src="firebase-config.js"></script>
-    <script type="module" src="main-script.js"></script>
+    <script type="module" src="firebase-config.js?v=3"></script>
+    <script type="module" src="main-script.js?v=3"></script>
 </body>
 </html>

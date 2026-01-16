@@ -1,7 +1,7 @@
 // Import Firebase modules
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-import { getAuth, GoogleAuthProvider, FacebookAuthProvider } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getAuth, GoogleAuthProvider, FacebookAuthProvider, OAuthProvider } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 // Your Firebase configuration - REPLACE WITH YOUR CONFIG FROM FIREBASE CONSOLE
 const firebaseConfig = {
@@ -25,6 +25,13 @@ facebookProvider.setCustomParameters({
   'display': 'popup'
 });
 
+// Microsoft OAuth Provider
+const microsoftProvider = new OAuthProvider('microsoft.com');
+microsoftProvider.setCustomParameters({
+  prompt: 'select_account',
+  tenant: 'common' // Allows both personal and work/school accounts
+});
+
 // Make Firebase available globally
 window.firebaseApp = app;
 window.firebaseDb = db;
@@ -34,8 +41,9 @@ window.firebaseServerTimestamp = serverTimestamp;
 window.firebaseAuth = auth;
 window.firebaseProvider = provider;
 window.firebaseFacebookProvider = facebookProvider;
+window.firebaseMicrosoftProvider = microsoftProvider;
 
 console.log('Firebase initialized successfully');
 
 // Export for module imports
-export { app, db, auth, provider, facebookProvider };
+export { app, db, auth, provider, facebookProvider, microsoftProvider };
