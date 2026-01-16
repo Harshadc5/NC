@@ -1358,37 +1358,62 @@ window.switchAuthTab = function(tab) {
     }
 };
 
-// Facebook Sign In
-window.handleFacebookSignIn = async function() {
-    console.log('🔵 Facebook Sign-In clicked!');
+// Twitter Sign In
+window.handleTwitterSignIn = async function() {
+    console.log('🔵 Twitter Sign-In clicked!');
     
-    const facebookProvider = window.firebaseFacebookProvider;
     const auth = window.firebaseAuth;
-    
-    if (!auth || !facebookProvider) {
-        alert('Facebook authentication is still loading. Please try again.');
+    if (!auth) {
+        alert('⚠️ Authentication is still loading.\n\nPlease wait a moment and try again.');
         return;
     }
     
     try {
-        console.log('🔵 Opening Facebook popup...');
+        // Create Twitter provider
+        const { OAuthProvider } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
+        const twitterProvider = new OAuthProvider('twitter.com');
+        
+        console.log('🔵 Opening Twitter popup...');
         const { signInWithPopup } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
-        const result = await signInWithPopup(auth, facebookProvider);
+        const result = await signInWithPopup(auth, twitterProvider);
         const user = result.user;
         
-        console.log('✅ Signed in with Facebook:', user.email);
+        console.log('✅ Twitter sign-in successful:', user.email);
+        console.log('User Info:', {
+            displayName: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL
+        });
         
-        // Close modal
+        // Close modal if exists
         if (window.closeAuthModal) {
             window.closeAuthModal();
         }
         
-        alert('Welcome, ' + user.displayName + '! ✨');
-        window.location.reload();
+        alert('Welcome, ' + (user.displayName || user.email) + '! ✨\n\nSuccessfully signed in with Twitter.');
+        
+        // Reload to update UI
+        setTimeout(() => {
+            window.location.reload();
+        }, 500);
+        
     } catch (error) {
-        console.error('❌ Facebook sign-in error:', error);
-        if (error.code !== 'auth/popup-closed-by-user') {
-            alert('Facebook sign-in failed: ' + error.message);
+        console.error('❌ Twitter sign-in error:', error);
+        console.error('Error code:', error.code);
+        console.error('Error message:', error.message);
+        
+        if (error.code === 'auth/popup-closed-by-user') {
+            console.log('User closed the popup');
+        } else if (error.code === 'auth/cancelled-popup-request') {
+            console.log('Popup request cancelled');
+        } else if (error.code === 'auth/popup-blocked') {
+            alert('❌ Popup Blocked\n\nYour browser blocked the Twitter sign-in popup.\n\nPlease allow popups for this site and try again.');
+        } else if (error.code === 'auth/unauthorized-domain') {
+            alert('❌ Unauthorized Domain\n\nThis domain is not authorized for Twitter sign-in.\n\nPlease contact support.');
+        } else if (error.code === 'auth/account-exists-with-different-credential') {
+            alert('❌ Account Already Exists\n\nAn account with this email already exists using a different sign-in method.\n\nPlease sign in using your original method.');
+        } else {
+            alert('❌ Twitter Sign-In Failed\n\nError: ' + error.message + '\n\nPlease try again or use another sign-in method.');
         }
     }
 };

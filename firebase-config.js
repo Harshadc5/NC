@@ -32,6 +32,9 @@ microsoftProvider.setCustomParameters({
   tenant: 'common' // Allows both personal and work/school accounts
 });
 
+// Twitter OAuth Provider
+const twitterProvider = new OAuthProvider('twitter.com');
+
 // Make Firebase available globally
 window.firebaseApp = app;
 window.firebaseDb = db;
@@ -42,8 +45,9 @@ window.firebaseAuth = auth;
 window.firebaseProvider = provider;
 window.firebaseFacebookProvider = facebookProvider;
 window.firebaseMicrosoftProvider = microsoftProvider;
+window.firebaseTwitterProvider = twitterProvider;
 
 console.log('Firebase initialized successfully');
 
 // Export for module imports
-export { app, db, auth, provider, facebookProvider, microsoftProvider };
+export { app, db, auth, provider, facebookProvider, microsoftProvider, twitterProvider };
